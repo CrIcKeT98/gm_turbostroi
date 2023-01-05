@@ -1,11 +1,10 @@
-[submodule "external/garrysmod_common-x86-64"]
-	path = external/garrysmod_common-x86-64
+[submodule "external/garrysmod_common"]
+	path = external/garrysmod_common
 	url = https://github.com/danielga/garrysmod_common
-	branch = x86-64-support-sourcesdk
-[submodule "external/gmod-module-base"]
-	path = external/gmod-module-base
-	url = https://github.com/Facepunch/gmod-module-base
-	branch = development
+	branch = master
 [submodule "external/metamod-source"]
-	path = external/metamod-source
-	url = https://github.com/alliedmodders/metamod-source
+	path = external/boost
+	url = https://github.com/boostorg/boost.git
+[submodule "external/luajit"]
+	path = external/luajit
+	url = https://github.com/LuaJIT/LuaJIT.git
