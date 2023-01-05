@@ -4,3 +4,6 @@
 [submodule "external/LuaJIT"]
 	path = external/LuaJIT
 	url = ../../LuaJIT/LuaJIT.git
+[submodule "external/boost"]
+	path = external/boost
+	url = ../../boostorg/boost.git
