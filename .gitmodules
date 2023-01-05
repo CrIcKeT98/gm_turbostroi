@@ -1,7 +1,3 @@
-[submodule "external/gmod-module-base"]
-	path = external/gmod-module-base
-	url = https://github.com/Facepunch/gmod-module-base
-	branch = development
 [submodule "external/garrysmod_common"]
 	path = external/garrysmod_common
 	url = ../../danielga/garrysmod_common.git
