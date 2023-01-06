@@ -5,6 +5,7 @@ doc/*/*
 export/*
 debug/*
 qtmoc/*
+projects/*
 support/source_sdk_2013_path.txt
 
 ## OS-specific

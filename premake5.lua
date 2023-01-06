@@ -23,7 +23,7 @@ removesysincludedirs 	{ "external/garrysmod_common/include", "external/garrysmod
 sysincludedirs 			{ "external/garrysmod_common/include", "external/garrysmod_common/helpers/include" }
 
 
-CreateWorkspace({name = "gm_turbostroi", abi_compatible = false, path = "projects/" .. os.target() .. "/" .. _ACTION})
+CreateWorkspace({name = "turbostroi", abi_compatible = false, path = "projects/" .. os.target() .. "/" .. _ACTION})
 
 CreateProject({serverside = true, source_path = "source", manual_files = false})
 
