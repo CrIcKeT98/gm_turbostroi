@@ -15,7 +15,7 @@ include(gmcommon .. "/generator.v2.lua")
 
 sysincludedirs { "source/include", 
 				"external/LuaJIT/src", 
-				"external/boost/libs"
+				"external/boost/boost"
 				}
 				
 --Fix include order
@@ -28,20 +28,20 @@ CreateWorkspace({name = "turbostroi", abi_compatible = false, path = "projects/"
 CreateProject({serverside = true, source_path = "source", manual_files = false})
 
 filter({"system:windows", "architecture:x86"})
-	libdirs("external/LuaJIT/x86")
+	libdirs("external/LuaJIT/x86", "external/boost/bin/x86/lib")
 	
 filter({"system:windows", "architecture:x86_64"})
-	libdirs("external/LuaJIT/x64")
+	libdirs("external/LuaJIT/x64", "external/boost/bin/x64/lib")
 
 filter("system:windows or macosx")
 	links("lua51", "luajit")
 
 filter({"system:linux", "architecture:x86"})
 	libdirs("external/LuaJIT/linux32")
-	links("lua51", "luajit")
+	links("lua51", "luajit", "external/boost/bin/x86/lib")
 
 filter({"system:linux", "architecture:x86_64"})
-	links("lua51", "luajit")
+	links("lua51", "luajit", "external/boost/bin/x64/lib")
 
 filter({})
 
