@@ -1,4 +1,4 @@
-PROJECT_GENERATOR_VERSION = 3
+PROJECT_GENERATOR_VERSION = 2
 
 local workspace_name = "turbostroi"
 local project_serverside = true
