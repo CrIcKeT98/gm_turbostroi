@@ -500,25 +500,29 @@ LUA_FUNCTION(API_SetSTAffinityMask)
 #pragma endregion Threading control
 
 #pragma region Other functions
-void TurbostroiThink()
-{
-	ThinkRunning = true;
-	ThinkStopped = false;
-	ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Think handler thread started.\n");
-	while (ThinkRunning)
+
+LUA_FUNCTION(Think_handler) {
+	TargetTime = Plat_FloatTime();
+	shared_message msg;
+
+	if (printMessages.pop(msg))
 	{
-		TargetTime = Plat_FloatTime();
-
-		shared_message msg;
-		while(printMessages.pop(msg)) {
-			ConColorMsg(Color(255, 0, 255), msg.message);
-		}
-
-		boost::this_thread::sleep_for(boost::chrono::milliseconds(ThreadTickrate));
+		ConColorMsg(Color(255, 0, 255, 255), msg.message);
 	}
 
-	ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Think handler thread stopped.\n");
-	ThinkStopped = true;
+	return 0;
+}
+
+void InstallHooks(ILuaBase* LUA) {
+	ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Installing hooks!\n");
+	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+	LUA->GetField(-1, "hook");
+	LUA->GetField(-1, "Add");
+	LUA->PushString("Think");
+	LUA->PushString("Turbostroi_TargetTimeSync");
+	LUA->PushCFunction(Think_handler);
+	LUA->Call(3, 0);
+	LUA->Pop(2);
 }
 
 void ClearLoadCache(const CCommand& command) {
@@ -577,9 +581,7 @@ GMOD_MODULE_OPEN()
 	}
 	LUA->Pop();
 
-	// Create think thread for some stuff
-	boost::thread thread(TurbostroiThink);
-	thread.detach();
+	InstallHooks(LUA);
 
 	// Create functions table
 	LUA->CreateTable();
