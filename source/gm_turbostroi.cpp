@@ -165,6 +165,26 @@ void threadSimulation(thread_userdata* userdata) {
 	if (!userdata)
 		return;
 
+	if (SimThreadAffinityMask)
+	{
+
+#if defined(_WIN32)
+		if (!SetThreadAffinityMask(GetCurrentThread(), static_cast<DWORD_PTR>(SimThreadAffinityMask))) {
+			ConColorMsg(Color(255, 0, 0, 255), "Turbostroi: SetSTAffinityMask failed on train thread!\n");
+		}
+#elif defined(POSIX)
+		cpu_set_t cpuSet;
+		CPU_ZERO(&cpuSet);
+
+		for (int i = 0; i < 32; i++)
+			if (SimThreadAffinityMask & (1 << i))
+				CPU_SET(i, &cpuSet);
+
+		if (sched_setaffinity(getpid(), sizeof(cpuSet), &cpuSet))
+			ConColorMsg(Color(255, 0, 255, 255), "Turbostroi: SetSTAffinityMask failed on train thread! (0x%04X)\n", errno);
+#endif
+	}
+
 	lua_State* L = userdata->L;
 
 	while (userdata && !userdata->finished) {
@@ -256,22 +276,6 @@ LUA_FUNCTION(API_InitializeTrain)
 
 	//Create thread for simulation
 	boost::thread thread(threadSimulation, userdata);
-
-#ifdef _WIN32
-	if (!SetThreadAffinityMask(thread.native_handle(), static_cast<DWORD_PTR>(SimThreadAffinityMask)))
-		ConColorMsg(Color(255, 0, 0), "Turbostroi: SetSTAffinityMask failed on train thread! Error: 0x%08X\n", GetLastError());
-#elif __GNUC__
-	cpu_set_t cpuSet;
-	CPU_ZERO(&cpuSet);
-
-	for( int i = 0 ; i < 32; i++ )
-	    if ( SimThreadAffinityMask & ( 1 << i ) )
-			CPU_SET( i, &cpuSet);
-
-	if (sched_setaffinity(thread.native_handle(), sizeof(cpuSet), &cpuSet)) {
-		ConColorMsg(Color(255, 0, 0), "Turbostroi: SetSTAffinityMask failed on train thread! Error: 0x%08X\n", errno);
-	}
-#endif
 
 	thread.detach();
 
@@ -462,15 +466,25 @@ LUA_FUNCTION(API_SetMTAffinityMask)
 	LUA->CheckType(1, Type::Number);
 	int MTAffinityMask = LUA->GetNumber(1);
 
-#ifdef _WIN32
+#if defined(_WIN32)
 	ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Main Thread Running on CPU%i\n", GetCurrentProcessorNumber());
 
 	if (!SetThreadAffinityMask(GetCurrentThread(), static_cast<DWORD_PTR>(MTAffinityMask)))
 		ConColorMsg(Color(255, 0, 0, 255), "Turbostroi: SetMTAffinityMask failed!\n");
 	else
 		ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Changed to CPU%i\n", GetCurrentProcessorNumber());
-#elif __GUNC__
+#elif defined(POSIX)
+	cpu_set_t cpuSet;
+	CPU_ZERO(&cpuSet);
 
+	for (int i = 0; i < 32; i++)
+		if (MTAffinityMask & (1 << i))
+			CPU_SET(i, &cpuSet);
+
+	if (sched_setaffinity(getpid(), sizeof(cpuSet), &cpuSet))
+		ConColorMsg(Color(255, 0, 0, 255), "Turbostroi: SetMTAffinityMask failed on train thread! (0x%04X)\n", errno);
+	else
+		ConColorMsg(Color(0, 255, 0, 255), "Turbostroi: Changed to CPU%i\n", sched_getcpu());
 #endif
 
 	return 0;
