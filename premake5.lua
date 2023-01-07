@@ -35,7 +35,6 @@ filter("system:windows or macosx")
 
 filter({"system:linux", "architecture:x86"})
 	libdirs({"external/LuaJIT/linux32", "external/boost/bin/x86/lib"})
-	links("lua51", "luajit")
 
 filter({"system:linux", "architecture:x86_64"})
 	links("lua51", "luajit")
