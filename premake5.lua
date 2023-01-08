@@ -6,7 +6,7 @@ local project_serverside = true
 newoption({
 	trigger = "gmcommon",
 	description = "Sets the path to the garrysmod_common (https://github.com/danielga/garrysmod_common) directory",
-	value = "../garrysmod_common"
+	value = "set in this place path"
 })
 
 local gmcommon = assert(_OPTIONS.gmcommon or os.getenv("GARRYSMOD_COMMON"),
@@ -30,16 +30,12 @@ filter({"system:windows", "architecture:x86"})
 filter({"system:windows", "architecture:x86_64"})
 	libdirs({"external/LuaJIT/x64", "external/boost/bin/x64/lib"})
 
-filter("system:windows or macosx")
-	links("lua51", "luajit")
-
 filter({"system:linux", "architecture:x86"})
-	libdirs({"external/LuaJIT/linux32", "external/boost/bin/x86/lib"})
+	libdirs({"external/LuaJIT/x86", "external/boost/bin/x86/lib"})
+	links{"boost_atomic", "boost_chrono", "boost_thread", "luajit", "pthread", "dl"}
 
 filter({"system:linux", "architecture:x86_64"})
-	links("lua51", "luajit")
-
-filter({})
+	links{"boost_atomic", "boost_chrono", "boost_thread", "luajit", "pthread", "dl"}
 
 IncludeSDKCommon()
 IncludeSDKTier0()
