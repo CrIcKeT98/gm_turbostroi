@@ -1,4 +1,3 @@
-> [Русская версия этого файла](README_ru.md)
 # Turbostroi V2 with cross-compile support
 - [x] Linux compile
 - [x] Use Source Engine think instead of our thread
@@ -10,7 +9,7 @@
 2. [Get](https://premake.github.io/download) `premake5.exe` for Windows
 3. Place and run `premake5.exe` in this folder:
 ```
-premake5.exe vs2022
+premake5.exe vs2022 --gmcommon=external/garrysmod_common
 ```
 - `vs2015` for Visual Studio 2015
 - `vs2017` for Visual Studio 2017
