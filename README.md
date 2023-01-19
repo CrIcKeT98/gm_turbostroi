@@ -1,30 +1,60 @@
-# IMPORTANT for gmsv_turbostroi_win64 (Gmod x86-64 beta branch):
-Version for Gmod x86-64 beta branch
-IMPORTANT: Only for x86-64 beta branch! Can crash server with public branch!
+> [Русская версия этого файла](README_ru.md)
+# Turbostroi V2 with cross-compile support
+- [x] Linux compile
+- [x] Use Source Engine think instead of our thread
+- [x] Code refactoring 
+- [ ] Optimization
 
-IMPORTANT: For gmsv_turbostroi_win64 (Gmod x86-64 beta branch):
-To work correctly, you need to unpack and change dll names in metrostroi files:
-`lua\autorun\metrostroi.lua` (line 289):
-`"win32"` -> `"win64"`
+# Manual for Windows MSVC compile:
+1. Install Visual Studio 2015 or newer
+2. [Get](https://premake.github.io/download) `premake5.exe` for Windows
+3. Place and run `premake5.exe` in this folder:
+```
+premake5.exe vs2022
+```
+- `vs2015` for Visual Studio 2015
+- `vs2017` for Visual Studio 2017
+- `vs2019` for Visual Studio 2019
+- `vs2022` for Visual Studio 2022
+4. Open `x86 Native Tools Command Prompt for VS` command prompt
+5. Go to `external\luajit\src` folder
+6. Run command:
+```
+msvcbuild.bat static
+```
+7. Copy `lua51.lib` to `external\luajit\x86`
+8. Open `projects\windows\<vs20xx>\turbostroi.sln`
+9. Compile with `Release/Win32` configuration
+10. Copy `projects\windows\vs2022\x86\Release\gmsv_turbostroi_win32.dll` to `GarrysModDS\garrysmod\lua\bin` (create `bin` folder if it doesn't exist) 
 
-`lua\metrostroi\sv_turbostroi_railnetwork.lua` (line 15):
-`"gmsv_turbostroi_win32"` -> `"gmsv_turbostroi_win64"`
+# Manual for Linux GCC compile:
+1. [Get](https://premake.github.io/download) `premake5.exe` for Linux
+2. Place and run `premake5` in this folder:
+```
+chmod +x ./premake5
+./premake5 gmake --gmcommon=external/garrysmod_common
+```
 
-`lua\metrostroi\sv_turbostroi_v2.lua` (line 224):
-`"gmsv_turbostroi_win32"` -> `"gmsv_turbostroi_win64"`
+3. To build LuaJIT in `external/luajit/src/Makefile` find
+```
+CC= $(DEFAULT_CC)
+```
+and add `-m32` parameter:
+```
+CC= $(DEFAULT_CC) -m32
+```
+4. Run `make` in `external/luajit` directory
+5. Copy `external/luajit/src/libluajit.a` to `external/luajit/x86`
+7. To build Boost library run `bootstrap.sh` in `external/boost/`
+8. Run `b2` in `external/boost/` with next recommended args: 
+```
+--build-dir=build/x86 address-model=32 threading=multi --stagedir=./bin/x86 --toolset=gcc -j 16 link=static runtime-link=static --variant=release
+```
+9. Open terminal in `projects/linux/gmake`
+10. Run compilation
+```
+make config=release_x86
+```
+11. Copy `projects/linux/gmake/x86/Release/gmsv_turbostroi_linux.dll` to `GarrysModDS\garrysmod\lua\bin` (create `bin` folder if it doesn't exist) 
 
--------------------------------------------------------------------
-
-Версия для ветки Gmod x86-64 beta
-ВАЖНО: Только для бета ветки x86-64! Может вылететь сервер с публичной веткой!
-
-ВАЖНО: Для gmsv_turbostroi_win64 (бета-ветка Gmod x86-64):
-Для корректной работы нужно распаковать и изменить имена dll в файлах метростроя:
-`lua\autorun\metrostroi.lua` (строка 289):
-`"win32"` -> `"win64"`
-
-`lua\metrostroi\sv_turbostroi_railnetwork.lua` (строка 15):
-`"gmsv_turbostroi_win32"` -> `"gmsv_turbostroi_win64"`
-
-`lua\metrostroi\sv_turbostroi_v2.lua` (строка 224):
-`"gmsv_turbostroi_win32"` -> `"gmsv_turbostroi_win64"`
+# IMPORTANT: DO NOT RUN THE SERVER ON GMOD x64 (TROUBLES WITH GMOD PHYSICS)
