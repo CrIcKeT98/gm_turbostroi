@@ -9,7 +9,7 @@
 2. [Get](https://premake.github.io/download) `premake5.exe` for Windows
 3. Place and run `premake5.exe` in this folder:
 ```
-premake5.exe vs2022 --gmcommon=external/garrysmod_common
+premake5.exe vs2022
 ```
 - `vs2015` for Visual Studio 2015
 - `vs2017` for Visual Studio 2017
@@ -31,7 +31,7 @@ msvcbuild.bat static
 2. Place and run `premake5` in this folder:
 ```
 chmod +x ./premake5
-./premake5 gmake --gmcommon=external/garrysmod_common
+./premake5 gmake
 ```
 
 3. To build LuaJIT in `external/luajit/src/Makefile` find
