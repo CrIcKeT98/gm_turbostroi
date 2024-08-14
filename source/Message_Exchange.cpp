@@ -500,7 +500,7 @@ void ThreadSimulation(thread_userdata* userdata) {
 	//Release resources
 	ConColorMsg(Color(255, 0, 255, 255), "[!] Terminating train thread\n");
 	lua_close(L);
-	free(userdata); //check this
+	delete userdata; //check this
 }
 
 extern "C" TURBOSTROI_EXPORT bool ThreadSendMessage(void* p, int message, const char* system_name, const char* name, double index, double value) {
